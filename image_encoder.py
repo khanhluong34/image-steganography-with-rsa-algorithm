@@ -1,8 +1,14 @@
 import cv2 
 import numpy as np   
 from utils import to_bin 
+from rsa.generate_keys import generate_keys
+from rsa.encrypt import encrypt_text
 
 def encode(image_name, secret_data, n_bits=2):
+    # generate keys 
+    generate_keys()
+    # encrypt the secret data 
+    secret_data = str(encrypt_text(secret_data))
     # read the image
     image = cv2.imread(image_name)
     # maximum bytes to encode

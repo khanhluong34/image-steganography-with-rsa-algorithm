@@ -1,6 +1,7 @@
 import cv2  
 import numpy as np  
 from utils import to_bin
+from rsa.decrypt import decrypt_text
 
 def decode(image_name, n_bits=1, in_bytes=False):
     print("[+] Decoding...")
@@ -33,4 +34,6 @@ def decode(image_name, n_bits=1, in_bytes=False):
             decoded_data += chr(int(byte, 2))
             if decoded_data[-5:] == "=====":
                 break
-    return decoded_data[:-5]
+    # decrypt the text by RSA 
+    decoded_data = decrypt_text(decoded_data[:-5])
+    return decoded_data
