@@ -2,7 +2,7 @@ import os
 import sys
 import base64
 
-from rsa.helpers import read_key
+from src.rsa.helpers import read_key
 
 
 def decrypt_text(text=None):

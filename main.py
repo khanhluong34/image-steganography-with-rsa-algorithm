@@ -1,8 +1,8 @@
 import cv2  
 import argparse
 import os
-from image_decoder import decode 
-from image_encoder import encode  
+from src.image_decoder import decode 
+from src.image_encoder import encode  
 
 class Control: 
     def __init__(self, text, file, encode="0", decode="0", n_bits=2):

@@ -1,7 +1,7 @@
 import os
 import base64
 
-from rsa.helpers import read_key
+from src.rsa.helpers import read_key
 
 
 def encrypt_text(text=None):

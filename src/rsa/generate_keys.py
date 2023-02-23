@@ -3,7 +3,7 @@ import sys
 
 from math import gcd
 
-from rsa.utils.math import get_random_prime, multiplicative_inverse
+from src.utils.math import get_random_prime, multiplicative_inverse
 
 
 def get_keys(p, q):

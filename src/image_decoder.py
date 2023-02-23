@@ -1,7 +1,7 @@
 import cv2  
 import numpy as np  
-from utils import to_bin
-from rsa.decrypt import decrypt_text
+from src.utils.to_bin import to_bin
+from src.rsa.decrypt import decrypt_text
 
 def decode(image_name, n_bits=1, in_bytes=False):
     print("[+] Decoding...")

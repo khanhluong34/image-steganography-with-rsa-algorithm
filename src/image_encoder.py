@@ -1,8 +1,8 @@
 import cv2 
 import numpy as np   
-from utils import to_bin 
-from rsa.generate_keys import generate_keys
-from rsa.encrypt import encrypt_text
+from src.utils.to_bin import to_bin 
+from src.rsa.generate_keys import generate_keys
+from src.rsa.encrypt import encrypt_text
 
 def encode(image_name, secret_data, n_bits=2):
     # generate keys 
