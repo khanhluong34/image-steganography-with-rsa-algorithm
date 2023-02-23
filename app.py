@@ -1,79 +1,124 @@
-import tkinter as tk
-from tkinter import filedialog
-from tkinter import messagebox
-from PIL import Image, ImageTk
+import io
+import PySimpleGUI as sg
+import textwrap
+
+import cv2
+
 from main import Control
 
+def make_window():
 
-class GUI:
-    def __init__(self, master):
-        self.master = master
-        master.geometry("200x200")
-        master.title("Hide Data in Images")
-        
-        # Initialize a Control object 
-        self.control = Control("", "")
+    sg.theme('TanBlue')
+    sg.set_options(font=("Helvetica", 14))
 
-        # Create a file selection button
-        self.select_image_button = tk.Button(master, text="Select Image for hiding data", command=self.load_image)
-        self.select_image_button.pack()
+    image_viewer_column = [
+        [
+            sg.Text("Image File"),
+            sg.In(size=(25, 1), enable_events=True, key="-File-"),
+            sg.FileBrowse(file_types=((('PNG Files', '*.png'),))),
+        ],
+        [
+            sg.Image(key="-IMAGE-", size=(400, 400)),
+        ]
+    ]
 
-        # Create a button to encode the image 
-        self.encode_button = tk.Button(master, text="Encode", command=self.encode)
-        self.encode_button.pack()
-        
-        # Create a button to decode the image
-        self.decode_button = tk.Button(master, text="Decode", command=self.decode)
-        self.decode_button.pack()
-        
-        """
-        # Create a canvas to display the image
-        self.canvas = tk.Canvas(master, width=500, height=500)
-        self.canvas.pack()
-        """
-        # Create a text field to enter text
-        self.text_field = tk.Entry(master)
-        self.text_field.pack()
+    encode_column = [
+        [sg.Text("Enter text to encode")],
+        [sg.InputText("", key="-ENCODE-MES-", size=(35, 2))],
+        [sg.Text("Write to file", key="-ENCODE-FILE-")],
+        [sg.In(size=(25, 1), enable_events=True, key="-ENCODE-FILE-INPUT-"), sg.FileSaveAs(file_types=(('PNG Files', '*.png'),))],
+        [sg.Button("Encode", key="-ENCODE-BUTTON-", disabled=True)],
+    ]
 
-        # Bind the <Return> key to the text field to a callback function
-        self.text_field.bind("<Return>", self.save_text)
+    decode_column = [
+        [sg.Text("Decoded text:", key="-DECODED-", size=(35, 1))],
+        [sg.Button("Decode", key="-DECODE-BUTTON-", disabled=True)],
+    ]
 
-        
-        # Create a label
-        self.label = tk.Label(master, text="No notification")
-        self.label.pack()
+    settings_column = [
+        [sg.Text("Choose an image first!", key="-STATUS-", font=("Helvetica", 16), size=(40, None))],
+        [sg.Text('_' * 40, size=(40, 2))],
+        [sg.Frame("Encode", encode_column)],
+        [sg.Text('_' * 40, size=(40, 2))],
+        [sg.Frame("Decode", decode_column)],
+    ]
 
-        # The image path for encryption or decryption
-        self.image_path = ""
+    # ----- Full layout -----
+    layout = [
+        [
+            sg.Column(image_viewer_column),
+            sg.VSeperator(),
+            sg.Column(settings_column),
+        ]
+    ]
 
-    def decode(self):
-        self.control.decode = self.image_path
-        message = self.control.decrypt()
-        self.label['text'] = message
-        
-    def encode(self):
-        self.control.encode = self.image_path
-        self.control.encrypt()
-    def save_text(self, event):
-        text = self.text_field.get()
-        self.control.text = text
-    def load_image(self):
-        # Use filedialog to select an image from the file system
-        file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.jpg;*.jpeg;*.png;*.gif")])
-        self.image_path = file_path
-        print(file_path)
-        """
-        
-        if file_path:
-            # Load the selected image and display it on the canvas
-            image = Image.open(file_path)
-            image = ImageTk.PhotoImage(image)
-            self.canvas.create_image(0, 0, anchor="nw", image=image)
-            self.canvas.image = image
-        """
+    window = sg.Window("Image Steganography Project", layout)
+
+    return window
+
+if __name__ == "__main__":
+    window = make_window()
+
+    # event loop
+    while True:
+        event, values = window.read()
+        if event == "Exit" or event == sg.WIN_CLOSED:
+            break
+
+        # Event when an image is selected
+        if event == "-File-" and values["-File-"]:
+            filename = values["-File-"]
+
+            # Get image size
+            img = cv2.imread(filename)
+            size = (img.shape[1], img.shape[0])
+
+            # Resize the image to fit the window
+            scale = 400 / max(size)
+            size = (int(size[0] * scale), int(size[1] * scale))
+            img = cv2.resize(img, size)
+
+            # Convert the image to bytes
+            is_success, buffer = cv2.imencode(".png", img)
+            io_buf = io.BytesIO(buffer)
+            ppl = io_buf.getvalue()
+
+            try:
+                window.Element("-IMAGE-").update(source=ppl, size=size)
+
+                window.Element("-ENCODE-BUTTON-").update(disabled=False)
+                window.Element("-DECODE-BUTTON-").update(disabled=False)
+
+                window.Element("-STATUS-").update("Hide a message into an image or decrypt a message hidden in one")
+
+                control = Control(filename)
+            except Exception as e:
+                window.Element("-TOUT-").update("Failed opening file or invalid file type")
+
+        if event == "-ENCODE-BUTTON-":
+            message = values["-ENCODE-MES-"]
+            output_file = values["-ENCODE-FILE-INPUT-"]
+
+            if message == "":
+                window.Element("-STATUS-").update("Please enter a message to encode")
+
+            elif output_file == "":
+                window.Element("-STATUS-").update("Please choose a directory to save the encoded image")
+
+            else:
+                control.encrypt(message, output_file)
+
+                window.Element("-STATUS-").update("Message encoded successfully")
 
 
-if __name__ == "__main__": 
-    root = tk.Tk()
-    gui = GUI(root)
-    root.mainloop()
+        if event == "-DECODE-BUTTON-":
+            message = control.decrypt()
+
+            if message == "":
+                window.Element("-STATUS-").update("No message found in the image")
+
+            else:
+                window.Element("-DECODED-").update("Decoded text: " + message)
+                
+    window.close()
+
