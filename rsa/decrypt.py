@@ -25,11 +25,12 @@ def decrypt_text(text=None):
     decrypted_text = decrypted_int.to_bytes(((decrypted_int.bit_length() + 7) // 8),"big").hex()
     decrypted_text = bytes.fromhex(str(decrypted_text))
     decrypted_message = decrypted_text.decode('utf-8')
-
+    """
     print('\n**********************************')
     print('Decrypted message:')
     print(decrypted_message)
     print('**********************************\n')
+    """
     return decrypted_message
 
 if __name__ == "__main__":

@@ -4,6 +4,42 @@ import os
 from image_decoder import decode 
 from image_encoder import encode  
 
+class Control: 
+    def __init__(self, text, file, encode="0", decode="0", n_bits=2):
+        self.text = text
+        self.file = file
+        self.encode = encode 
+        self.decode = decode  
+        self.n_bits = n_bits 
+    def encrypt(self):
+        if self.text != "":
+            secret_data = self.text
+        elif self.file != "":
+            with open(self.file, "rb") as f:
+                secret_data = f.read()
+        input_image = self.encode
+        # split the absolute path and the file
+        _, file = os.path.split(input_image)
+        # split the filename and the image extension
+        filename, ext = file.split(".")
+        output_image = os.path.join("./images/output_images/", f"{filename}_encoded.{ext}")
+        # encode the data into the image
+        encoded_image = encode(image_name=input_image, secret_data=secret_data, n_bits=self.n_bits)
+        # save the output image (encoded image)
+        cv2.imwrite(output_image, encoded_image)
+    def decrypt(self): 
+        input_image = self.decode
+        if self.file:
+            # decode the secret data from the image and write it to file
+            decoded_data = decode(input_image, n_bits=self.n_bits, in_bytes=True)
+            with open(self.file, "wb") as f:
+                f.write(decoded_data)
+            print(f"[+] File decoded, {self.file} is saved successfully.")
+        else:
+            # decode the secret data from the image and print it in the console
+            decoded_data = decode(input_image, n_bits=self.n_bits)
+            print("[+] Decoded data:", decoded_data) 
+        return decoded_data
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Steganography encoder/decoder, this Python scripts encode data within images.")
