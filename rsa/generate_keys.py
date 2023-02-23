@@ -66,8 +66,6 @@ def generate_keys():
         'n': n,
         'd': d
     }
-    print("p: ", p)
-    print("q: ", q)
     _write_key(public_key)
     _write_key(private_key,'private')
 

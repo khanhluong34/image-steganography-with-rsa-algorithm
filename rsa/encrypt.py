@@ -22,11 +22,12 @@ def encrypt_text(text=None):
 
     encoded_message = int(encoded_message,16)
     encrypted_message = pow(encoded_message, e, n)
-    
+    """
     print('\n**********************************')
     print('Encrypted message:')
     print(encrypted_message)
     print('**********************************\n')
+    """
     return encrypted_message
 
 if __name__ == "__main__":
