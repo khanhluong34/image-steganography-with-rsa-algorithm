@@ -4,11 +4,10 @@ from src.utils.to_bin import to_bin
 from src.rsa.generate_keys import generate_keys
 from src.rsa.encrypt import encrypt_text
 
-def encode(image_name, secret_data, n_bits=2):
-    # generate keys 
-    generate_keys()
+def encode(image_name, secret_data, public_key, n_bits=2):
+
     # encrypt the secret data 
-    secret_data = str(encrypt_text(secret_data))
+    secret_data = str(encrypt_text(secret_data, public_key))
     # read the image
     image = cv2.imread(image_name)
     # maximum bytes to encode

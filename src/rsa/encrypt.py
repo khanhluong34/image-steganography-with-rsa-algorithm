@@ -4,17 +4,13 @@ import base64
 from src.rsa.helpers import read_key
 
 
-def encrypt_text(text=None):
-    if text == None:
-        message = input("Enter message: ")
-    else:
-        message = text
+def encrypt_text(message, public_key):
+
     message_bytes = message.encode('utf-8')
     encoded_message = message_bytes.hex()
 
-    keys = read_key('public')
-    n = int(keys['n'])
-    e = int(keys['e'])
+    n = int(public_key['n'])
+    e = int(public_key['e'])
     
     print('')
     print('n:',n)

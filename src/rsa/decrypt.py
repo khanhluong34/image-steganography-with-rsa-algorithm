@@ -5,11 +5,7 @@ import base64
 from src.rsa.helpers import read_key
 
 
-def decrypt_text(text=None):
-    if text == None:
-        cipher_text = input("Enter cipher text: ")
-    else:
-        cipher_text = text
+def decrypt_text(cipher_text):
 
     keys = read_key('private')
     n = int(keys['n'])

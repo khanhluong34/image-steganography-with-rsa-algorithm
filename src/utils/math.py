@@ -55,4 +55,4 @@ def get_random_prime(prime_size):
     
 
 def multiplicative_inverse(e, phi):
-        return _extended_euclid(e, phi)[1] % phi
+    return _extended_euclid(e, phi)[1] % phi

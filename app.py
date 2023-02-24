@@ -22,7 +22,13 @@ def make_window():
         ]
     ]
 
+    key_column = [
+        [sg.Text("Private key", key="-KEY-")],
+    ]
+
     encode_column = [
+        [sg.Text("Public key", key="-ENCODE-PUBLIC-")],
+        [sg.In(size=(25, 1), enable_events=True, key="-ENCODE-PUBLIC-INPUT-"), sg.FileBrowse(file_types=(('Text Files', '*.txt'),))],
         [sg.Text("Enter text to encode")],
         [sg.InputText("", key="-ENCODE-MES-", size=(35, 2))],
         [sg.Text("Write to file", key="-ENCODE-FILE-")],
@@ -49,6 +55,9 @@ def make_window():
             sg.Column(image_viewer_column),
             sg.VSeperator(),
             sg.Column(settings_column),
+        ],
+        [
+            sg.Text("By: Luong, Son va Thang (K65-DSAI-HUST)")
         ]
     ]
 
