@@ -60,7 +60,7 @@ if __name__ == "__main__":
         filename, ext = file.split(".")
         output_image = os.path.join("./images/output_images/", f"{filename}_encoded.{ext}")
         # encode the data into the image
-        encoded_image = encode(image_name=input_image, secret_data=secret_data, n_bits=args.n_bits)
+        encoded_image = encode(image_name=input_image,public_key="./src/rsa/public.key", secret_data=secret_data, n_bits=args.n_bits)
         # save the output image (encoded image)
         cv2.imwrite(output_image, encoded_image)
         print("[+] Saved encoded image.")
@@ -68,11 +68,11 @@ if __name__ == "__main__":
         input_image = args.decode
         if args.file:
             # decode the secret data from the image and write it to file
-            decoded_data = decode(input_image, n_bits=args.n_bits, in_bytes=True)
+            decoded_data = decode(input_image, private_key="./src/rsa/private.key", n_bits=args.n_bits, in_bytes=True)
             with open(args.file, "wb") as f:
                 f.write(decoded_data)
             print(f"[+] File decoded, {args.file} is saved successfully.")
         else:
             # decode the secret data from the image and print it in the console
-            decoded_data = decode(input_image, n_bits=args.n_bits)
+            decoded_data = decode(input_image, private_key="./src/rsa/private.key", n_bits=args.n_bits)
             print("[+] Decoded data:", decoded_data)
