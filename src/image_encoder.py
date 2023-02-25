@@ -60,4 +60,5 @@ def encode(image_name, secret_data, public_key, n_bits=2):
                 # if data is encoded, just break out of the loop
                 if data_index >= data_len:
                     break
+    print("[*] Finished Encoding data!")
     return image

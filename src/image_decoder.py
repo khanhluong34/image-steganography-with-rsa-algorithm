@@ -36,4 +36,5 @@ def decode(image_name, private_key, n_bits=1, in_bytes=False):
                 break
     # decrypt the text by RSA 
     decoded_data = decrypt_text(decoded_data[:-5], private_key)
+    print("[+] Finish decoding data!")
     return decoded_data
