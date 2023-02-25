@@ -28,7 +28,7 @@ def make_window():
 
     encode_column = [
         [sg.Text("Public key", key="-ENCODE-PUBLIC-")],
-        [sg.In(size=(25, 1), enable_events=True, key="-ENCODE-PUBLIC-INPUT-"), sg.FileBrowse(file_types=(('Text Files', '*.txt'),))],
+        [sg.In(size=(25, 1), enable_events=True, key="-ENCODE-PUBLIC-INPUT-"), sg.FileBrowse(file_types=(('Key Files', '*.key'),))],
         [sg.Text("Enter text to encode")],
         [sg.InputText("", key="-ENCODE-MES-", size=(35, 2))],
         [sg.Text("Write to file", key="-ENCODE-FILE-")],
@@ -39,6 +39,8 @@ def make_window():
     decode_column = [
         [sg.Text("Decoded text:", key="-DECODED-", size=(35, 1))],
         [sg.Button("Decode", key="-DECODE-BUTTON-", disabled=True)],
+        [sg.Text("Private key", key="-DECODE-PHASE-")],
+        [sg.In(size=(25, 1), enable_events=True, key="-DECODE-PRIVATE-INPUT-"), sg.FileBrowse(file_types=(('Key Files', '*.key'),))],
     ]
 
     settings_column = [
@@ -65,15 +67,15 @@ def make_window():
 
     return window
 
+
 if __name__ == "__main__":
     window = make_window()
-
+    control = Control("")
     # event loop
     while True:
         event, values = window.read()
         if event == "Exit" or event == sg.WIN_CLOSED:
             break
-
         # Event when an image is selected
         if event == "-File-" and values["-File-"]:
             filename = values["-File-"]
@@ -100,28 +102,33 @@ if __name__ == "__main__":
 
                 window.Element("-STATUS-").update("Hide a message into an image or decrypt a message hidden in one")
 
-                control = Control(filename)
+                control.set_filename(filename)
             except Exception as e:
                 window.Element("-TOUT-").update("Failed opening file or invalid file type")
 
         if event == "-ENCODE-BUTTON-":
             message = values["-ENCODE-MES-"]
             output_file = values["-ENCODE-FILE-INPUT-"]
-
+            public_key = values["-ENCODE-PUBLIC-INPUT-"]
             if message == "":
                 window.Element("-STATUS-").update("Please enter a message to encode")
 
             elif output_file == "":
                 window.Element("-STATUS-").update("Please choose a directory to save the encoded image")
-
+            elif public_key == "":
+                window.Element("-STATUS-").update("Please choose a directory of a public key")
             else:
-                control.encrypt(message, output_file)
+                control.encrypt(message, output_file, public_key)
 
                 window.Element("-STATUS-").update("Message encoded successfully")
 
 
         if event == "-DECODE-BUTTON-":
-            message = control.decrypt()
+            private_key = values["-DECODE-PRIVATE-INPUT-"]
+            if private_key == "": 
+                window.Element("-STATUS-").update("Please choose a directory of a private key")
+            else: 
+                message = control.decrypt(private_key)
 
             if message == "":
                 window.Element("-STATUS-").update("No message found in the image")

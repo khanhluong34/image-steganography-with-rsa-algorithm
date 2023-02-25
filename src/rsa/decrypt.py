@@ -5,9 +5,9 @@ import base64
 from src.rsa.helpers import read_key
 
 
-def decrypt_text(cipher_text):
+def decrypt_text(cipher_text, private_key_filepath):
 
-    keys = read_key('private')
+    keys = read_key(private_key_filepath)
     n = int(keys['n'])
     d = int(keys['d'])
 

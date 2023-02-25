@@ -1,11 +1,7 @@
 import os
 
-def read_key(filetype='public'):
-    filename = '{}.key'.format(filetype)
-    filepath = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        filename
-    )
+def read_key(filepath, filetype='public'):
+    filename = os.path.basename(filepath).split('/')[-1]
 
     key_dict = {}
     with open(filepath, 'r') as file:

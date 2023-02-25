@@ -3,7 +3,7 @@ import numpy as np
 from src.utils.to_bin import to_bin
 from src.rsa.decrypt import decrypt_text
 
-def decode(image_name, n_bits=1, in_bytes=False):
+def decode(image_name, private_key, n_bits=1, in_bytes=False):
     print("[+] Decoding...")
     # read the image
     image = cv2.imread(image_name)
@@ -35,5 +35,5 @@ def decode(image_name, n_bits=1, in_bytes=False):
             if decoded_data[-5:] == "=====":
                 break
     # decrypt the text by RSA 
-    decoded_data = decrypt_text(decoded_data[:-5])
+    decoded_data = decrypt_text(decoded_data[:-5], private_key)
     return decoded_data

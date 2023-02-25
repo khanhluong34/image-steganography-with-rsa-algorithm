@@ -9,18 +9,20 @@ class Control:
         self.filename = filename
         self.n_bits = n_bits
 
-    def encrypt(self, text, output_image):
+    def set_filename(self, filename):
+        self.filename = filename
+    def encrypt(self, text, input_image, public_key):
         
         # encode the data into the image
-        encoded_image = encode(image_name=input_image, secret_data=text, n_bits=self.n_bits)
+        encoded_image = encode(image_name=input_image, secret_data=text, public_key=public_key,n_bits=self.n_bits)
         
         # save the output image (encoded image)
-        cv2.imwrite(output_image, encoded_image)
+        cv2.imwrite(input_image, encoded_image)
 
-    def decrypt(self):
+    def decrypt(self, private_key):
         print(self.filename)
         
-        decoded_data = decode(self.filename, n_bits=self.n_bits)
+        decoded_data = decode(self.filename, private_key, n_bits=self.n_bits)
 
         return decoded_data
 
