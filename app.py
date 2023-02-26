@@ -31,8 +31,8 @@ def make_window():
         [sg.In(size=(25, 1), enable_events=True, key="-ENCODE-PUBLIC-INPUT-"), sg.FileBrowse(file_types=(('Key Files', '*.key'),))],
         [sg.Text("Enter text to encode")],
         [sg.InputText("", key="-ENCODE-MES-", size=(35, 2))],
-        [sg.Text("Write to file", key="-ENCODE-FILE-")],
-        [sg.In(size=(25, 1), enable_events=True, key="-ENCODE-FILE-INPUT-"), sg.FileSaveAs(file_types=(('PNG Files', '*.png'),))],
+        [sg.Text("Save in folder", key="-ENCODE-FILE-")],
+        [sg.In(size=(25, 1), enable_events=True, key="-ENCODE-FILE-INPUT-"), sg.FolderBrowse()],
         [sg.Button("Encode", key="-ENCODE-BUTTON-", disabled=True)],
     ]
 
@@ -108,18 +108,17 @@ if __name__ == "__main__":
 
         if event == "-ENCODE-BUTTON-":
             message = values["-ENCODE-MES-"]
-            output_file = values["-ENCODE-FILE-INPUT-"]
+            output_path = values["-ENCODE-FILE-INPUT-"]
             public_key = values["-ENCODE-PUBLIC-INPUT-"]
             if message == "":
                 window.Element("-STATUS-").update("Please enter a message to encode")
 
-            elif output_file == "":
+            elif output_path == "":
                 window.Element("-STATUS-").update("Please choose a directory to save the encoded image")
             elif public_key == "":
                 window.Element("-STATUS-").update("Please choose a directory of a public key")
             else:
-                control.encrypt(message, output_file, public_key)
-
+                control.encrypt(message, output_path, public_key)
                 window.Element("-STATUS-").update("Message encoded successfully")
 
 

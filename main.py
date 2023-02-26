@@ -11,13 +11,16 @@ class Control:
 
     def set_filename(self, filename):
         self.filename = filename
-    def encrypt(self, text, input_image, public_key):
-        
+    def encrypt(self, text, output_path, public_key):
+        _, file = os.path.split(self.filename)
+        # split the filename and the image extension
+        filename, ext = file.split(".")
+        output_image = os.path.join(output_path, f"{filename}_encoded.{ext}")
         # encode the data into the image
-        encoded_image = encode(image_name=input_image, secret_data=text, public_key=public_key,n_bits=self.n_bits)
+        encoded_image = encode(image_name=self.filename, secret_data=text, public_key=public_key,n_bits=self.n_bits)
         
         # save the output image (encoded image)
-        cv2.imwrite(input_image, encoded_image)
+        cv2.imwrite(output_image, encoded_image)
 
     def decrypt(self, private_key):
         print(self.filename)
