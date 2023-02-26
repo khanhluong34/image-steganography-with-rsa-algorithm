@@ -22,10 +22,10 @@ class Control:
         # save the output image (encoded image)
         cv2.imwrite(output_image, encoded_image)
 
-    def decrypt(self, private_key):
+    def decrypt(self):
         print(self.filename)
         
-        decoded_data = decode(self.filename, private_key, n_bits=self.n_bits)
+        decoded_data = decode(self.filename, n_bits=self.n_bits)
 
         return decoded_data
 

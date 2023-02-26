@@ -39,8 +39,6 @@ def make_window():
     decode_column = [
         [sg.Text("Decoded text:", key="-DECODED-", size=(35, 1))],
         [sg.Button("Decode", key="-DECODE-BUTTON-", disabled=True)],
-        [sg.Text("Private key", key="-DECODE-PHASE-")],
-        [sg.In(size=(25, 1), enable_events=True, key="-DECODE-PRIVATE-INPUT-"), sg.FileBrowse(file_types=(('Key Files', '*.key'),))],
     ]
 
     settings_column = [
@@ -122,12 +120,9 @@ if __name__ == "__main__":
                 window.Element("-STATUS-").update("Message encoded successfully")
 
 
-        if event == "-DECODE-BUTTON-":
-            private_key = values["-DECODE-PRIVATE-INPUT-"]
-            if private_key == "": 
-                window.Element("-STATUS-").update("Please choose a directory of a private key")
-            else: 
-                message = control.decrypt(private_key)
+        if event == "-DECODE-BUTTON-":    
+            
+            message = control.decrypt()
 
             if message == "":
                 window.Element("-STATUS-").update("No message found in the image")
