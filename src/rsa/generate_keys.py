@@ -20,10 +20,18 @@ def get_keys(p, q):
 
 def _write_key(keydict, filetype='public'):
     filename = '{}.key'.format(filetype)
-    filepath = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        filename
-    )
+
+    if filetype == 'private':
+        filepath = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            filename
+        )
+    else:
+        # Public key is saved outside of the src directory
+        filepath = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))),
+            filename
+        )
 
 
     f = open(filepath, "w")
